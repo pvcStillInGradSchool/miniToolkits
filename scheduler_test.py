@@ -23,16 +23,16 @@ class TestScheduler(unittest.TestCase):
         """Test add_a_dependency() and count_dependencies()."""
         a_scheduler = Scheduler()
         self.assertEqual(a_scheduler.count_tasks(), 0)
-        self.assertEqual(a_scheduler.count_dependencies(), 0)
+        self.assertEqual(a_scheduler.check_dependency('B', 'A'), False)
+        self.assertEqual(a_scheduler.check_dependency('A', 'B'), False)
         a_scheduler.add_a_dependency(task='B', prerequisite='A')
         self.assertEqual(a_scheduler.count_tasks(), 2)
-        self.assertEqual(a_scheduler.count_dependencies(), 1)
-        a_scheduler.add_a_dependency('C', 'B')
+        self.assertEqual(a_scheduler.check_dependency('B', 'A'), True)
+        self.assertEqual(a_scheduler.check_dependency('A', 'B'), False)
+        a_scheduler.add_a_dependency(task='C', prerequisite='A')
         self.assertEqual(a_scheduler.count_tasks(), 3)
-        self.assertEqual(a_scheduler.count_dependencies(), 2)
-        a_scheduler.add_a_dependency('C', 'A')
-        self.assertEqual(a_scheduler.count_tasks(), 3)
-        self.assertEqual(a_scheduler.count_dependencies(), 3)
+        self.assertEqual(a_scheduler.check_dependency('C', 'A'), True)
+        self.assertEqual(a_scheduler.check_dependency('A', 'C'), False)
 
     def test_schedule(self):
         """Test schedule()."""
