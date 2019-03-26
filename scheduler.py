@@ -6,7 +6,7 @@ class Scheduler:
     def __init__(self):
         self._tasks = set()
 
-    def add_task(self, task):
+    def add_a_task(self, task):
         """Add a new task.
 
         Do nothing, if the task has already been added.
@@ -18,7 +18,7 @@ class Scheduler:
         """Return the number of tasks being added."""
         return len(self._tasks)
 
-    def add_dependency(self, task, prerequisite):
+    def add_a_dependency(self, task, prerequisite):
         """Add a new dependency."""
 
     def count_dependencies(self):
