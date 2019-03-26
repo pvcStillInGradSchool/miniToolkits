@@ -47,6 +47,9 @@ class TestScheduler(unittest.TestCase):
         a_scheduler = Scheduler()
         a_scheduler.add_a_prerequisite(task='B', prerequisite='A')
         a_scheduler.add_a_prerequisite(task='C', prerequisite='B')
+        self._assert_topological_order(a_scheduler)
+
+    def _assert_topological_order(self, a_scheduler):
         sorted_tasks = a_scheduler.schedule()
         self.assertEqual(len(sorted_tasks), a_scheduler.count_tasks())
         i = 0
