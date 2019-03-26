@@ -39,10 +39,7 @@ class Scheduler:
             return False
         if self._is_new(dependency):
             return False
-        if dependency in self._task_to_dependencies[task]:
-            return True
-        else:
-            return False
+        return dependency in self._task_to_dependencies[task]
 
     def schedule(self):
         """Schedule added tasks being added."""
