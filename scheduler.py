@@ -5,6 +5,9 @@ class Scheduler:
 
     def __init__(self):
         self._task_to_dependencies = dict()
+        self._touched_tasks = set()
+        self._finished_tasks = set()
+        self._sorted_tasks = list()
 
     def add_a_task(self, task):
         """Add a new task.
@@ -42,7 +45,31 @@ class Scheduler:
         return dependency in self._task_to_dependencies[task]
 
     def schedule(self):
-        """Schedule added tasks being added."""
+        """Return the tasks in topologically sorted order."""
+        self._reset()
+        for task in self._task_to_dependencies:
+            if task not in self._touched_tasks:
+                self._depth_first_search(task)
+        self._assert_equal_length()
+        return self._sorted_tasks
+
+    def _reset(self):
+        self._touched_tasks.clear()
+        self._finished_tasks.clear()
+        self._sorted_tasks.clear()
+
+    def _depth_first_search(self, task):
+        self._touched_tasks.add(task)
+        for depended_task in self._task_to_dependencies[task]:
+            if depended_task not in self._finished_tasks:
+                assert depended_task not in self._touched_tasks, 'Cycle detected!'
+                self._depth_first_search(depended_task)
+        self._finished_tasks.add(task)
+        self._sorted_tasks.append(task)
+
+    def _assert_equal_length(self):
+        assert (len(self._touched_tasks) == len(self._finished_tasks) ==
+                len(self._sorted_tasks) == len(self._task_to_dependencies))
 
 
 if __name__ == "__main__":
