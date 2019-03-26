@@ -36,7 +36,17 @@ class TestScheduler(unittest.TestCase):
 
     def test_schedule(self):
         """Test schedule()."""
-        self.fail()
+        a_scheduler = Scheduler()
+        a_scheduler.add_a_dependency(task='B', dependency='A')
+        a_scheduler.add_a_dependency(task='C', dependency='B')
+        sorted_tasks = a_scheduler.schedule()
+        self.assertEqual(len(sorted_tasks), a_scheduler.count_tasks())
+        i = 0
+        for task_i in sorted_tasks:
+            for j in range(i, len(sorted_tasks)):
+                task_j = sorted_tasks[j]
+                self.assertFalse(a_scheduler.check_dependency(task_i, task_j))
+            i += 1
 
 
 if __name__ == "__main__":
