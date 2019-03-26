@@ -26,11 +26,11 @@ class Scheduler:
         """Return the number of tasks being added."""
         return len(self._task_to_prerequisites)
 
-    def add_a_dependency(self, task, prerequisite):
-        """Add a new dependency.
+    def add_a_prerequisite(self, task, prerequisite):
+        """Add a prerequisite for a task.
 
         Automatically add a new task, if any of the two is new.
-        Do nothing, if the dependency has already been added.
+        Do nothing, if the prerequisite has already been added.
         """
         if self._has_not_added(task):
             self.add_a_task(task)
@@ -38,10 +38,10 @@ class Scheduler:
             self.add_a_task(prerequisite)
         self._task_to_prerequisites[task].add(prerequisite)
 
-    def add_dependencies(self, task, prerequisites):
+    def add_prerequisites(self, task, prerequisites):
         """Add multiple prerequisites for a task."""
         for prerequisite in prerequisites:
-            self.add_a_dependency(task, prerequisite)
+            self.add_a_prerequisite(task, prerequisite)
 
     def check_dependency(self, task, prerequisite):
         """Whether task depends on prerequisite?"""
