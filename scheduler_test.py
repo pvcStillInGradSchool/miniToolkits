@@ -21,7 +21,18 @@ class TestScheduler(unittest.TestCase):
 
     def test_add_and_count_dependency(self):
         """Test add_a_dependency() and count_dependencies()."""
-        self.fail()
+        a_scheduler = Scheduler()
+        self.assertEqual(a_scheduler.count_tasks(), 0)
+        self.assertEqual(a_scheduler.count_dependencies(), 0)
+        a_scheduler.add_a_dependency(task='B', prerequisite='A')
+        self.assertEqual(a_scheduler.count_tasks(), 2)
+        self.assertEqual(a_scheduler.count_dependencies(), 1)
+        a_scheduler.add_a_dependency('C', 'B')
+        self.assertEqual(a_scheduler.count_tasks(), 3)
+        self.assertEqual(a_scheduler.count_dependencies(), 2)
+        a_scheduler.add_a_dependency('C', 'A')
+        self.assertEqual(a_scheduler.count_tasks(), 3)
+        self.assertEqual(a_scheduler.count_dependencies(), 3)
 
     def test_schedule(self):
         """Test schedule()."""
