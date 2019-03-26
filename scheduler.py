@@ -33,8 +33,16 @@ class Scheduler:
             self.add_a_task(dependency)
         self._task_to_dependencies[task].add(dependency)
 
-    def count_dependencies(self):
-        """Return the number of dependencies being added."""
+    def check_dependency(self, task, dependency):
+        """Whether task depends on dependency?"""
+        if self._is_new(task):
+            return False
+        if self._is_new(dependency):
+            return False
+        if dependency in self._task_to_dependencies[task]:
+            return True
+        else:
+            return False
 
     def schedule(self):
         """Schedule added tasks being added."""
