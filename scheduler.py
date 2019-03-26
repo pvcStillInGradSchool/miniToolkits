@@ -21,8 +21,17 @@ class Scheduler:
         """Return the number of tasks being added."""
         return len(self._task_to_dependencies)
 
-    def add_a_dependency(self, task, prerequisite):
-        """Add a new dependency."""
+    def add_a_dependency(self, task, dependency):
+        """Add a new dependency.
+
+        Automatically add a new task, if any of the two is new.
+        Do nothing, if the dependency has already been added.
+        """
+        if self._is_new(task):
+            self.add_a_task(task)
+        if self._is_new(dependency):
+            self.add_a_task(dependency)
+        self._task_to_dependencies[task].add(dependency)
 
     def count_dependencies(self):
         """Return the number of dependencies being added."""
