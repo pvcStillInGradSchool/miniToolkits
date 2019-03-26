@@ -48,6 +48,10 @@ class TestScheduler(unittest.TestCase):
         a_scheduler.add_a_prerequisite(task='B', prerequisite='A')
         a_scheduler.add_a_prerequisite(task='C', prerequisite='B')
         self._assert_topological_order(a_scheduler)
+        # Make a dependency graph with multiple independent components.
+        a_scheduler.add_a_prerequisite(task=2, prerequisite=1)
+        a_scheduler.add_prerequisites(task=3, prerequisites=(2, 1))
+        self._assert_topological_order(a_scheduler)
         # Make a cycle in the dependency graph.
         a_scheduler.add_a_prerequisite(task='A', prerequisite='C')
         with self.assertRaises(AssertionError):
@@ -55,13 +59,15 @@ class TestScheduler(unittest.TestCase):
 
     def _assert_topological_order(self, a_scheduler):
         sorted_tasks = a_scheduler.schedule()
-        self.assertEqual(len(sorted_tasks), a_scheduler.count_tasks())
-        i = 0
-        for task_i in sorted_tasks:
-            for j in range(i, len(sorted_tasks)):
-                task_j = sorted_tasks[j]
-                self.assertFalse(a_scheduler.check_dependency(task_i, task_j))
-            i += 1
+        # self.assertEqual(len(sorted_tasks), a_scheduler.count_tasks())
+        for a_component in sorted_tasks:
+            i = 0
+            for task_i in a_component:
+                for j in range(i, len(a_component)):
+                    task_j = sorted_tasks[j]
+                    self.assertFalse(
+                        a_scheduler.check_dependency(task_i, task_j))
+                i += 1
 
 
 if __name__ == "__main__":
