@@ -48,6 +48,10 @@ class TestScheduler(unittest.TestCase):
         a_scheduler.add_a_prerequisite(task='B', prerequisite='A')
         a_scheduler.add_a_prerequisite(task='C', prerequisite='B')
         self._assert_topological_order(a_scheduler)
+        # Make a cycle in the dependency graph.
+        a_scheduler.add_a_prerequisite(task='A', prerequisite='C')
+        with self.assertRaises(AssertionError):
+            a_scheduler.schedule()
 
     def _assert_topological_order(self, a_scheduler):
         sorted_tasks = a_scheduler.schedule()
