@@ -7,7 +7,10 @@ class Scheduler:
         pass
 
     def add_task(self, task):
-        """Add a new task."""
+        """Add a new task.
+
+        Do nothing, if the task has already been added.
+        """
 
     def count_tasks(self):
         """Return the number of tasks being added."""
