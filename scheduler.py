@@ -14,11 +14,8 @@ class Scheduler:
 
         Do nothing, if the task has already been added.
         """
-        if self._is_new(task):
+        if self._has_not_added(task):
             self._task_to_dependencies[task] = set()
-
-    def _is_new(self, task):
-        return task not in self._task_to_dependencies
 
     def count_tasks(self):
         """Return the number of tasks being added."""
@@ -30,17 +27,17 @@ class Scheduler:
         Automatically add a new task, if any of the two is new.
         Do nothing, if the dependency has already been added.
         """
-        if self._is_new(task):
+        if self._has_not_added(task):
             self.add_a_task(task)
-        if self._is_new(dependency):
+        if self._has_not_added(dependency):
             self.add_a_task(dependency)
         self._task_to_dependencies[task].add(dependency)
 
     def check_dependency(self, task, dependency):
         """Whether task depends on dependency?"""
-        if self._is_new(task):
+        if self._has_not_added(task):
             return False
-        if self._is_new(dependency):
+        if self._has_not_added(dependency):
             return False
         return dependency in self._task_to_dependencies[task]
 
@@ -48,10 +45,19 @@ class Scheduler:
         """Return the tasks in topologically sorted order."""
         self._reset()
         for task in self._task_to_dependencies:
-            if task not in self._touched_tasks:
+            if self._has_not_touched(task):
                 self._depth_first_search(task)
         self._assert_equal_length()
         return self._sorted_tasks
+
+    def _has_not_added(self, task):
+        return task not in self._task_to_dependencies
+
+    def _has_not_touched(self, task):
+        return task not in self._touched_tasks
+
+    def _has_not_finished(self, task):
+        return task not in self._finished_tasks
 
     def _reset(self):
         self._touched_tasks.clear()
@@ -61,8 +67,8 @@ class Scheduler:
     def _depth_first_search(self, task):
         self._touched_tasks.add(task)
         for depended_task in self._task_to_dependencies[task]:
-            if depended_task not in self._finished_tasks:
-                assert depended_task not in self._touched_tasks, 'Cycle detected!'
+            if self._has_not_finished(depended_task):
+                assert self._has_not_touched(depended_task), 'Cycle detected!'
                 self._depth_first_search(depended_task)
         self._finished_tasks.add(task)
         self._sorted_tasks.append(task)
