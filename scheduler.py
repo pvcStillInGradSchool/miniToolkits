@@ -4,19 +4,22 @@ class Scheduler:
     """Schedule a set of tasks."""
 
     def __init__(self):
-        self._tasks = set()
+        self._task_to_dependencies = dict()
 
     def add_a_task(self, task):
         """Add a new task.
 
         Do nothing, if the task has already been added.
         """
-        if task not in self._tasks:
-            self._tasks.add(task)
+        if self._is_new(task):
+            self._task_to_dependencies[task] = set()
+
+    def _is_new(self, task):
+        return task not in self._task_to_dependencies
 
     def count_tasks(self):
         """Return the number of tasks being added."""
-        return len(self._tasks)
+        return len(self._task_to_dependencies)
 
     def add_a_dependency(self, task, prerequisite):
         """Add a new dependency."""
