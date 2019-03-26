@@ -17,6 +17,11 @@ class Scheduler:
         if self._has_not_added(task):
             self._task_to_prerequisites[task] = set()
 
+    def add_tasks(self, tasks):
+        """Add multiple tasks."""
+        for task in tasks:
+            self.add_a_task(task)
+
     def count_tasks(self):
         """Return the number of tasks being added."""
         return len(self._task_to_prerequisites)
@@ -32,6 +37,11 @@ class Scheduler:
         if self._has_not_added(prerequisite):
             self.add_a_task(prerequisite)
         self._task_to_prerequisites[task].add(prerequisite)
+
+    def add_dependencies(self, task, prerequisites):
+        """Add multiple prerequisites for a task."""
+        for prerequisite in prerequisites:
+            self.add_a_dependency(task, prerequisite)
 
     def check_dependency(self, task, prerequisite):
         """Whether task depends on prerequisite?"""
