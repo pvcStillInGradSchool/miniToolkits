@@ -22,25 +22,34 @@ class TestScheduler(unittest.TestCase):
         self.assertEqual(a_scheduler.count_tasks(), 4)
 
     def test_add_and_check_dependency(self):
-        """Test add_a_dependency(), add_dependencies() and check_dependency()."""
+        """Test add_a_prerequisite(), add_prerequisites() and check_dependency()."""
         a_scheduler = Scheduler()
+        # No dependency in an empty graph.
         self.assertEqual(a_scheduler.count_tasks(), 0)
-        self.assertEqual(a_scheduler.check_dependency('B', 'A'), False)
-        self.assertEqual(a_scheduler.check_dependency('A', 'B'), False)
+        self.assertFalse(a_scheduler.check_dependency('B', 'A'))
+        self.assertFalse(a_scheduler.check_dependency('A', 'B'))
+        # A unidirectional dependency between two tasks: A <- B.
         a_scheduler.add_a_prerequisite(task='B', prerequisite='A')
         self.assertEqual(a_scheduler.count_tasks(), 2)
-        self.assertEqual(a_scheduler.check_dependency('B', 'A'), True)
-        self.assertEqual(a_scheduler.check_dependency('A', 'B'), False)
-        a_scheduler.add_a_prerequisite(task='C', prerequisite='A')
+        self.assertTrue(a_scheduler.check_dependency('B', 'A'))
+        self.assertFalse(a_scheduler.check_dependency('A', 'B'))
+        # Make a dependency list: A <- B <- C.
+        a_scheduler.add_a_prerequisite(task='C', prerequisite='B')
         self.assertEqual(a_scheduler.count_tasks(), 3)
-        self.assertEqual(a_scheduler.check_dependency('C', 'A'), True)
-        self.assertEqual(a_scheduler.check_dependency('A', 'C'), False)
-        self.assertEqual(a_scheduler.check_dependency('C', 'B'), False)
-        self.assertEqual(a_scheduler.check_dependency('B', 'C'), False)
+        self.assertTrue(a_scheduler.check_dependency('C', 'B'))
+        self.assertTrue(a_scheduler.check_dependency('B', 'A'))
+        # C indirectly depends on A.
+        self.assertTrue(a_scheduler.check_dependency('C', 'A'))
+        # No dependency in the opposite direction.
+        self.assertFalse(a_scheduler.check_dependency('A', 'B'))
+        self.assertFalse(a_scheduler.check_dependency('B', 'C'))
+        self.assertFalse(a_scheduler.check_dependency('A', 'C'))
+        # Add multiple prerequisites.
         a_scheduler.add_prerequisites(task='A', prerequisites=('B', 'C'))
         self.assertEqual(a_scheduler.count_tasks(), 3)
-        self.assertEqual(a_scheduler.check_dependency('A', 'B'), True)
-        self.assertEqual(a_scheduler.check_dependency('A', 'C'), True)
+        self.assertTrue(a_scheduler.check_dependency('A', 'B'))
+        self.assertTrue(a_scheduler.check_dependency('B', 'C'))
+        self.assertTrue(a_scheduler.check_dependency('A', 'C'))
 
     def test_schedule(self):
         """Test schedule()."""
