@@ -58,12 +58,12 @@ class TestScheduler(unittest.TestCase):
             a_scheduler.schedule()
 
     def _assert_topological_order(self, a_scheduler):
-        sorted_tasks = a_scheduler.schedule()
+        sorted_components = a_scheduler.schedule()
         # self.assertEqual(len(sorted_tasks), a_scheduler.count_tasks())
-        for a_component in sorted_tasks:
+        for sorted_tasks in sorted_components:
             i = 0
-            for task_i in a_component:
-                for j in range(i, len(a_component)):
+            for task_i in sorted_tasks:
+                for j in range(i, len(sorted_tasks)):
                     task_j = sorted_tasks[j]
                     self.assertFalse(
                         a_scheduler.check_dependency(task_i, task_j))
