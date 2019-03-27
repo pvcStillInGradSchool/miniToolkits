@@ -63,6 +63,10 @@ class TestScheduler(unittest.TestCase):
         a_scheduler.add_prerequisites(task=3, prerequisites=(2, 1))
         scheduled_tasks = a_scheduler.schedule()
         self.assertEqual(scheduled_tasks, {('A', 'B', 'C'), (1, 2, 3)})
+        a_scheduler.add_a_prerequisite(task=2, prerequisite=4)
+        scheduled_tasks = a_scheduler.schedule()
+        self.assertTrue(scheduled_tasks in ({('A', 'B', 'C'), (1, 4, 2, 3)},
+                                            {('A', 'B', 'C'), (4, 1, 2, 3)}))
         # Make a cycle in the dependency graph.
         a_scheduler.add_a_prerequisite(task='A', prerequisite='C')
         with self.assertRaises(AssertionError):
