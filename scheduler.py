@@ -127,4 +127,15 @@ class Scheduler:
 
 
 if __name__ == "__main__":
-    pass
+    import sys
+    a_scheduler = Scheduler()
+    for line in sys.stdin:
+        if line[0] != '#':
+            tasks = line.split()
+            a_scheduler.add_prerequisites(tasks[0], tasks[1:])
+    i = 0
+    for component in a_scheduler.schedule():
+        i += 1
+        print('Independent Task Group {0}:'.format(i))
+        for task in component:
+            print('  ' + task)

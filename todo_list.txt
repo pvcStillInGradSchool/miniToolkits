@@ -1,0 +1,8 @@
+# B depends on A:
+B A
+# C depends on A and B:
+C A B
+# 2 depends on 1:
+2 1
+# 3 depends on 1 and 2:
+3 1 2
