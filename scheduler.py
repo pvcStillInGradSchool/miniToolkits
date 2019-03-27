@@ -69,9 +69,10 @@ class Scheduler:
                 task_to_root[task] = task_to_root[prerequisite]
             component = root_to_components[task_to_root[task]]
             component.append(task)
-        components = tuple(root_to_components.values())
-        print(components)
-        return components
+        scheduled_tasks = set()
+        for component in root_to_components.values():
+            scheduled_tasks.add(tuple(component))
+        return scheduled_tasks
 
     def _has_no_prerequisite(self, task):
         prerequisites = self._task_to_prerequisites[task]
