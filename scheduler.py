@@ -54,6 +54,7 @@ class Scheduler:
         return self._has_touched(prerequisite)
 
     def _depth_first_touch(self, task):
+        """Touch-only Depth-First-Search."""
         self._touched_tasks.add(task)
         for prerequisite in self._task_to_prerequisites[task]:
             if self._has_not_touched(prerequisite):
@@ -64,8 +65,11 @@ class Scheduler:
         self._reset()
         for task in self._task_to_prerequisites:
             if self._has_not_touched(task):
-                self._depth_first_search(task)
+                self._topo_sort(task)
         self._assert_equal_length()
+        return self._pack_scheduled_tasks()
+
+    def _pack_scheduled_tasks(self):
         task_to_root = dict()
         root_to_components = dict()
         for task in self._sorted_tasks:
@@ -107,12 +111,13 @@ class Scheduler:
         self._finished_tasks.clear()
         self._sorted_tasks.clear()
 
-    def _depth_first_search(self, task):
+    def _topo_sort(self, task):
+        """Topologically sort all the downstream tasks reachable from task."""
         self._touched_tasks.add(task)
         for prerequisite in self._task_to_prerequisites[task]:
             if self._has_not_finished(prerequisite):
                 assert self._has_not_touched(prerequisite), 'Cycle detected!'
-                self._depth_first_search(prerequisite)
+                self._topo_sort(prerequisite)
         self._finished_tasks.add(task)
         self._sorted_tasks.append(task)
 
