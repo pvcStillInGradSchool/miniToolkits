@@ -49,7 +49,15 @@ class Scheduler:
             return False
         if self._has_not_added(prerequisite):
             return False
-        return prerequisite in self._task_to_prerequisites[task]
+        self._reset()
+        self._depth_first_touch(task)
+        return self._has_touched(prerequisite)
+
+    def _depth_first_touch(self, task):
+        self._touched_tasks.add(task)
+        for prerequisite in self._task_to_prerequisites[task]:
+            if self._has_not_touched(prerequisite):
+                self._depth_first_touch(prerequisite)
 
     def schedule(self):
         """Return the tasks in topologically sorted order."""
@@ -84,6 +92,9 @@ class Scheduler:
 
     def _has_not_added(self, task):
         return task not in self._task_to_prerequisites
+
+    def _has_touched(self, task):
+        return task in self._touched_tasks
 
     def _has_not_touched(self, task):
         return task not in self._touched_tasks
