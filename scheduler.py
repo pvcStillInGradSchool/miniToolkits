@@ -58,7 +58,28 @@ class Scheduler:
             if self._has_not_touched(task):
                 self._depth_first_search(task)
         self._assert_equal_length()
-        return self._sorted_tasks
+        task_to_root = dict()
+        root_to_components = dict()
+        for task in self._sorted_tasks:
+            if self._has_no_prerequisite(task):
+                task_to_root[task] = task
+                root_to_components[task] = list()
+            else:
+                prerequisite = self._get_a_prerequisite(task)
+                task_to_root[task] = task_to_root[prerequisite]
+            component = root_to_components[task_to_root[task]]
+            component.append(task)
+        components = tuple(root_to_components.values())
+        print(components)
+        return components
+
+    def _has_no_prerequisite(self, task):
+        prerequisites = self._task_to_prerequisites[task]
+        return len(prerequisites) == 0
+
+    def _get_a_prerequisite(self, task):
+        prerequisites = self._task_to_prerequisites[task]
+        return next(iter(prerequisites))
 
     def _has_not_added(self, task):
         return task not in self._task_to_prerequisites
