@@ -5,6 +5,8 @@ class Scheduler:
 
     def __init__(self):
         self._task_to_prerequisites = dict()
+        self._task_to_parent = dict()
+        self._task_to_size = dict()
         self._touched_tasks = set()
         self._finished_tasks = set()
         self._sorted_tasks = list()
@@ -16,6 +18,8 @@ class Scheduler:
         """
         if self._has_not_added(task):
             self._task_to_prerequisites[task] = set()
+            self._task_to_parent[task] = task
+            self._task_to_size[task] = 1
 
     def add_tasks(self, tasks):
         """Add multiple tasks."""
@@ -36,7 +40,38 @@ class Scheduler:
             self.add_a_task(task)
         if self._has_not_added(prerequisite):
             self.add_a_task(prerequisite)
-        self._task_to_prerequisites[task].add(prerequisite)
+        self._connect_tasks(task, prerequisite)
+
+    def _connect_tasks(self, task_a, task_b):
+        self._task_to_prerequisites[task_a].add(task_b)
+        root_a = self._find_root(task_a)
+        root_b = self._find_root(task_b)
+        if root_a == root_b:
+            return
+        else:
+            # In this case, a and b are in saparated trees.
+            # Always link the smaller tree to the larger one's root.
+            root_smaller, root_larger = self._compare_two_trees(root_a, root_b)
+            self._task_to_parent[root_smaller] = root_larger
+            self._task_to_size[root_larger] += self._task_to_size[root_smaller]
+
+    def _compare_two_trees(self, root_a, root_b):
+        if self._task_to_size[root_a] < self._task_to_size[root_b]:
+            return root_a, root_b
+        else:
+            return root_b, root_a
+
+    def _find_root(self, task):
+        parent = self._task_to_parent[task]
+        while task != parent:
+            # Move the subtree rooted at task one layer upward.
+            grand_parent = self._task_to_parent[parent]
+            self._task_to_parent[task] = grand_parent
+            task = grand_parent
+            # Maintain loop invariant, i.e.
+            #   parent == self._task_to_parent[task]
+            parent = self._task_to_parent[task]
+        return task
 
     def add_prerequisites(self, task, prerequisites):
         """Add multiple prerequisites for a task."""
@@ -70,19 +105,14 @@ class Scheduler:
         return self._pack_scheduled_tasks()
 
     def _pack_scheduled_tasks(self):
-        task_to_root = dict()
-        root_to_components = dict()
+        root_to_component = dict()
         for task in self._sorted_tasks:
-            if self._has_no_prerequisite(task):
-                task_to_root[task] = task
-                root_to_components[task] = list()
-            else:
-                prerequisite = self._get_a_prerequisite(task)
-                task_to_root[task] = task_to_root[prerequisite]
-            component = root_to_components[task_to_root[task]]
-            component.append(task)
+            root = self._find_root(task)
+            if root not in root_to_component:
+                root_to_component[root] = list()
+            root_to_component[root].append(task)
         scheduled_tasks = set()
-        for component in root_to_components.values():
+        for component in root_to_component.values():
             scheduled_tasks.add(tuple(component))
         return scheduled_tasks
 
