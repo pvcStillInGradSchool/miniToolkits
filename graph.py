@@ -1,7 +1,7 @@
 """Define classes for building and processing graphs."""
 
 
-class Union:
+class UnionFind:
     """A container supporting quick union/find operations."""
 
     def __init__(self):
