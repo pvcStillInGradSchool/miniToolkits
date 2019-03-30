@@ -57,6 +57,14 @@ class DirectedGraph(AbstractGraph):
         return frozenset()
 
 
+class Reachability:
+    """Check reachability from one vertex to another in a directed graph."""
+
+    def __init__(self, a_graph):
+        self._graph = a_graph
+
+    def has_path(self, p, q):
+        """Is there a directed path from p to q."""
 class UnionFind(AbstractGraph):
     """A container supporting quick union/find operations."""
 

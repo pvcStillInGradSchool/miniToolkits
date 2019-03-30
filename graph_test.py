@@ -3,6 +3,7 @@
 import unittest
 
 from graph import DirectedGraph
+from graph import Reachability
 from graph import UnionFind
 
 
@@ -89,6 +90,59 @@ class TestDirectedGraph(unittest.TestCase):
         self.assertEqual(a_graph.neighbors(3), set())
         self.assertEqual(a_graph.neighbors(4), set())
 
+
+class TestReachability(unittest.TestCase):
+    """Test the correctness of graph.Reachability."""
+
+    def test_empty_graph(self):
+        """Test public methods on an empty graph."""
+        # Build an empty graph.
+        a_graph = DirectedGraph()
+        checker = Reachability(a_graph)
+        # Non-existing vertex is always NOT reachable.
+        self.assertFalse(checker.has_path(0, 0))
+        self.assertFalse(checker.has_path(0, 1))
+
+    def test_linked_list(self):
+        """Test public methods on a linked list."""
+        # Build a linked list: 
+        #   0 -> 1 -> 2
+        a_graph = DirectedGraph()
+        a_graph.connect(0, 1)
+        a_graph.connect(1, 2)
+        checker = Reachability(a_graph)
+        # A vertex is always reachable from/to itself.
+        self.assertTrue(checker.has_path(0, 0))
+        self.assertTrue(checker.has_path(1, 1))
+        self.assertTrue(checker.has_path(2, 2))
+        # A downstream vertex is reachable from an upstream vertex.
+        self.assertTrue(checker.has_path(0, 1))
+        self.assertTrue(checker.has_path(1, 2))
+        self.assertTrue(checker.has_path(0, 2))
+        # A upstream vertex is NOT reachable from an downstream vertex.
+        self.assertFalse(checker.has_path(1, 0))
+        self.assertFalse(checker.has_path(2, 0))
+        self.assertFalse(checker.has_path(2, 1))
+
+    def test_binary_tree(self):
+        """Test public methods on a binary tree."""
+        # Build a binary tree: 
+        #     0
+        #    / \
+        #   1   2
+        a_graph = DirectedGraph()
+        a_graph.connect(0, 1)
+        a_graph.connect(0, 2)
+        checker = Reachability(a_graph)
+        # All the vertices are reachable from the root.
+        self.assertTrue(checker.has_path(0, 1))
+        self.assertTrue(checker.has_path(0, 2))
+        # Vertices in another subtree are NOT reachable.
+        self.assertFalse(checker.has_path(1, 2))
+        self.assertFalse(checker.has_path(2, 1))
+        # Parent is NOT reachable.
+        self.assertFalse(checker.has_path(1, 0))
+        self.assertFalse(checker.has_path(2, 0))
 
 class TestUnionFind(unittest.TestCase):
     """Test the correctness of graph.UnionFind."""
