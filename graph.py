@@ -2,30 +2,31 @@
 
 
 class DirectedGraph:
-    
+    """An index-based directed graph data structure."""
+
     def __init__(self):
         # Suppose vertex[i] is the i-th vertex, then
         # _neighbor[i] is the set of neighbors of vertex[i]
         self._neighbor = list()
-    
-    def n_elements(self):
-        """Return the total number of elements in this graph."""
+
+    def n_vertices(self):
+        """Return the total number of vertices in this graph."""
         return len(self._neighbor)
 
     def add(self, i):
-        """Add an element labeled by an int to this container."""
+        """Add a vertex labeled by an int to this container."""
         assert isinstance(i, int) and i >= 0
         while not self._has(i):
             self._neighbor.append(set())
 
     def connect(self, j, k):
-        """Connect element[j] to element[k]."""
+        """Connect vertex[j] to vertex[k]."""
         self.add(j)
         self.add(k)
         self._neighbor[j].add(k)
 
     def connected(self, j, k):
-        """Return True if element[k] is a neighbor of element[j].
+        """Return True if vertex[k] is a neighbor of vertex[j].
 
         Return False, if either of them has not been added.
         """
@@ -36,30 +37,30 @@ class DirectedGraph:
         return k in self._neighbor[j]
 
     def neighbors(self, i):
-        """Return a set containing element[i]'s neighbors."""
+        """Return a set containing vertex[i]'s neighbors."""
         if self._has(i):
             return frozenset(self._neighbor[i])
         return frozenset()
 
     def _has(self, i):
-        return i < self.n_elements()
+        return i < self.n_vertices()
 
 
 class UnionFind:
     """A container supporting quick union/find operations."""
 
     def __init__(self):
-        # Suppose element[i] is the i-th element.
-        # _parent[i] is the id of the parent of element[i].
+        # Suppose vertex[i] is the i-th vertex.
+        # _parent[i] is the id of the parent of vertex[i].
         self._parent = list()
-        # _size[i] is the size of the largest tree containing element[i].
+        # _size[i] is the size of the largest tree containing vertex[i].
         self._size = list()
 
     def add(self, i):
-        """Add an element labeled by an int to this container."""
+        """Add a vertex labeled by an int to this container."""
         assert isinstance(i, int) and i >= 0
         while not self._has(i):
-            self._parent.append(self.n_elements())
+            self._parent.append(self.n_vertices())
             self._size.append(1)
 
     def connect(self, j, k):
@@ -79,12 +80,12 @@ class UnionFind:
             return False
         return self.root(j) == self.root(k)
 
-    def n_elements(self):
-        """Return the total number of elements in this container."""
+    def n_vertices(self):
+        """Return the total number of vertices in this container."""
         return len(self._size)
 
     def _has(self, i):
-        return i < self.n_elements()
+        return i < self.n_vertices()
 
     def root(self, i):
         """Return the root of the tree containing i."""

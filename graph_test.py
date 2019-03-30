@@ -13,42 +13,42 @@ class TestDirectedGraph(unittest.TestCase):
         """Test public methods on an empty union."""
         # Create [].
         an_empty_graph = DirectedGraph()
-        self.assertEqual(an_empty_graph.n_elements(), 0)
+        self.assertEqual(an_empty_graph.n_vertices(), 0)
         self.assertEqual(an_empty_graph.connected(0, 0), False)
         self.assertEqual(an_empty_graph.connected(0, 1), False)
         self.assertEqual(an_empty_graph.neighbors(0), set())
 
     def test_consecutive_adding(self):
-        """Test adding elements consecutively."""
+        """Test adding vertices consecutively."""
         # Create [].
         a_graph = DirectedGraph()
         # Add 0 to [], which becomes [set()].
         a_graph.add(0)
-        self.assertEqual(a_graph.n_elements(), 1)
+        self.assertEqual(a_graph.n_vertices(), 1)
         self.assertEqual(a_graph.connected(0, 0), True)
         self.assertEqual(a_graph.connected(0, 1), False)
         self.assertEqual(a_graph.connected(1, 1), False)
         # Add 0 to [set()], nothing changes.
         a_graph.add(0)
-        self.assertEqual(a_graph.n_elements(), 1)
+        self.assertEqual(a_graph.n_vertices(), 1)
         self.assertEqual(a_graph.connected(0, 0), True)
         self.assertEqual(a_graph.connected(0, 1), False)
         self.assertEqual(a_graph.connected(1, 1), False)
         # Add 1 to [set()], which becomes [set(), set()].
         a_graph.add(1)
-        self.assertEqual(a_graph.n_elements(), 2)
+        self.assertEqual(a_graph.n_vertices(), 2)
         self.assertEqual(a_graph.connected(0, 0), True)
         self.assertEqual(a_graph.connected(0, 1), False)
         self.assertEqual(a_graph.connected(1, 1), True)
 
     def test_non_consecutive_adding(self):
-        """Test adding elements non-consecutively."""
+        """Test adding vertices non-consecutively."""
         # Create [].
         a_graph = DirectedGraph()
         # Add 1 to [], which becomes [set(), set()].
         # Here 0 is added implicitly.
         a_graph.add(1)
-        self.assertEqual(a_graph.n_elements(), 2)
+        self.assertEqual(a_graph.n_vertices(), 2)
         self.assertEqual(a_graph.connected(0, 0), True)
         self.assertEqual(a_graph.connected(0, 1), False)
         self.assertEqual(a_graph.connected(1, 1), True)
@@ -60,8 +60,8 @@ class TestDirectedGraph(unittest.TestCase):
         # Implicitly add 0, 1, 2 to [], then connect 1 with 2,
         # which makes [set(), {2}, set()].
         a_graph.connect(1, 2)
-        self.assertEqual(a_graph.n_elements(), 3)
-        # Trivially connected elements.
+        self.assertEqual(a_graph.n_vertices(), 3)
+        # Trivially connected vertices.
         self.assertEqual(a_graph.connected(0, 0), True)
         self.assertEqual(a_graph.connected(1, 1), True)
         self.assertEqual(a_graph.connected(2, 2), True)
@@ -97,41 +97,41 @@ class TestUnionFind(unittest.TestCase):
         """Test public methods on an empty union."""
         # Create { }.
         an_empty_graph = UnionFind()
-        self.assertEqual(an_empty_graph.n_elements(), 0)
+        self.assertEqual(an_empty_graph.n_vertices(), 0)
         self.assertEqual(an_empty_graph.connected(0, 0), False)
         self.assertEqual(an_empty_graph.connected(0, 1), False)
 
     def test_consecutive_adding(self):
-        """Test adding elements consecutively."""
+        """Test adding vertices consecutively."""
         # Create { }.
         a_graph = UnionFind()
         # Add 0 to { }, which becomes { {0} }.
         a_graph.add(0)
-        self.assertEqual(a_graph.n_elements(), 1)
+        self.assertEqual(a_graph.n_vertices(), 1)
         self.assertEqual(a_graph.connected(0, 0), True)
         self.assertEqual(a_graph.connected(0, 1), False)
         self.assertEqual(a_graph.connected(1, 1), False)
         # Add 0 to { {0} }, nothing changes.
         a_graph.add(0)
-        self.assertEqual(a_graph.n_elements(), 1)
+        self.assertEqual(a_graph.n_vertices(), 1)
         self.assertEqual(a_graph.connected(0, 0), True)
         self.assertEqual(a_graph.connected(0, 1), False)
         self.assertEqual(a_graph.connected(1, 1), False)
         # Add 1 to { {0} }, which becomes { {0}, {1} }.
         a_graph.add(1)
-        self.assertEqual(a_graph.n_elements(), 2)
+        self.assertEqual(a_graph.n_vertices(), 2)
         self.assertEqual(a_graph.connected(0, 0), True)
         self.assertEqual(a_graph.connected(0, 1), False)
         self.assertEqual(a_graph.connected(1, 1), True)
 
     def test_non_consecutive_adding(self):
-        """Test adding elements non-consecutively."""
+        """Test adding vertices non-consecutively."""
         # Create { }.
         a_graph = UnionFind()
         # Add 1 to { }, which becomes { {0}, {1} }.
         # Here 0 is added implicitly.
         a_graph.add(1)
-        self.assertEqual(a_graph.n_elements(), 2)
+        self.assertEqual(a_graph.n_vertices(), 2)
         self.assertEqual(a_graph.connected(0, 0), True)
         self.assertEqual(a_graph.connected(0, 1), False)
         self.assertEqual(a_graph.connected(1, 1), True)
@@ -143,7 +143,7 @@ class TestUnionFind(unittest.TestCase):
         # Implicitly add 0, 1, 2 to { }, then connect 1 with 2,
         # which makes { {0}, {1, 2} }.
         a_graph.connect(1, 2)
-        self.assertEqual(a_graph.n_elements(), 3)
+        self.assertEqual(a_graph.n_vertices(), 3)
         # Trivially connected components.
         self.assertEqual(a_graph.connected(0, 0), True)
         self.assertEqual(a_graph.connected(1, 1), True)
