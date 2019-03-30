@@ -5,7 +5,6 @@ class UnionFind:
     """A container supporting quick union/find operations."""
 
     def __init__(self):
-        """Initialize the underlying data structure."""
         # Suppose element[i] is the i-th element.
         # _parent[i] is the id of the parent of element[i].
         self._parent = list()
