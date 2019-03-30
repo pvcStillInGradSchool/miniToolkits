@@ -34,7 +34,7 @@ class Union:
         """
         if (not self._has(j)) or (not self._has(k)):
             return False
-        return self._root(j) == self._root(k)
+        return self.root(j) == self.root(k)
 
     def n_elements(self):
         """Return the total number of elements in this container."""
@@ -43,7 +43,8 @@ class Union:
     def _has(self, i):
         return i < self.n_elements()
 
-    def _root(self, i):
+    def root(self, i):
+        assert self._has(i), "{0} is not in this container.".format(i)
         while i != self._parent[i]:
             # Compress the path to make the tree flatter.
             grand_parent = self._parent[self._parent[i]]
@@ -53,8 +54,8 @@ class Union:
         return i
 
     def _compare_tree(self, j, k):
-        root_j = self._root(j)
-        root_k = self._root(k)
+        root_j = self.root(j)
+        root_k = self.root(k)
         if self._size[root_j] < self._size[root_k]:
             return root_j, root_k
         return root_k, root_j

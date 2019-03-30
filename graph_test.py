@@ -72,6 +72,19 @@ class TestUnion(unittest.TestCase):
         self.assertEqual(a_union.connected(0, 2), False)
         self.assertEqual(a_union.connected(2, 0), False)
 
+    def test_root(self):
+        """Test root()."""
+        # Create { {0}, {1, 2} }.
+        a_union = graph.Union()
+        a_union.connect(1, 2)
+        # Check legal input.
+        self.assertEqual(a_union.root(0), 0)
+        self.assertTrue(a_union.root(1) in {1, 2})
+        self.assertTrue(a_union.root(2) in {1, 2})
+        # Check illegal input.
+        with self.assertRaises(AssertionError):
+            a_union.root(3)
+
 
 if __name__ == "__main__":
     unittest.main()
