@@ -6,24 +6,45 @@ class DirectedGraph:
     def __init__(self):
         # Suppose vertex[i] is the i-th vertex, then
         # _neighbor[i] is the set of neighbors of vertex[i]
+        self._neighbor = list()
     
     def n_elements(self):
         """Return the total number of elements in this graph."""
+        return len(self._neighbor)
 
     def add(self, i):
         """Add an element labeled by an int to this container."""
+        assert isinstance(i, int) and i >= 0
+        while not self._has(i):
+            self._neighbor.append(set())
 
     def connect(self, j, k):
         """Connect element[j] to element[k]."""
+        self.add(j)
+        self.add(k)
+        self._neighbor[j].add(k)
 
     def connected(self, j, k):
         """Return True if element[k] is a neighbor of element[j].
 
         Return False, if either of them has not been added.
         """
+        if (not self._has(j)) or (not self._has(k)):
+            return False
+        if j == k:
+            return True
+        return k in self._neighbor[j]
 
     def neighbors(self, i):
         """Return a set containing element[i]'s neighbors."""
+        if self._has(i):
+            return frozenset(self._neighbor[i])
+        return frozenset()
+
+    def _has(self, i):
+        return i < self.n_elements()
+
+
 class UnionFind:
     """A container supporting quick union/find operations."""
 
