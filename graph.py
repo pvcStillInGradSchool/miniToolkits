@@ -1,6 +1,7 @@
 """Define classes for building and processing graphs."""
 
 import abc
+from array import array
 
 
 class AbstractGraph(abc.ABC):
@@ -62,9 +63,34 @@ class Reachability:
 
     def __init__(self, a_graph):
         self._graph = a_graph
+        self._touched = array('b')
+        for i in range(a_graph.n_vertices()):
+            self._touched.append(False)
 
     def has_path(self, p, q):
         """Is there a directed path from p to q."""
+        if not self._graph.has_vertex(p):
+            return False
+        if not self._graph.has_vertex(q):
+            return False
+        if p == q:
+            return True
+        self._reset()
+        self._depth_first_touch(p)
+        return bool(self._touched[q])
+
+    def _reset(self):
+        assert len(self._touched) == self._graph.n_vertices()
+        for i in range(self._graph.n_vertices()):
+            self._touched[i] = False
+
+    def _depth_first_touch(self, p):
+        self._touched[p] = True
+        for q in self._graph.neighbors(p):
+            if not self._touched[q]:
+                self._depth_first_touch(q)
+
+
 class UnionFind(AbstractGraph):
     """A container supporting quick union/find operations."""
 
