@@ -105,7 +105,7 @@ class TestReachability(unittest.TestCase):
 
     def test_linked_list(self):
         """Test public methods on a linked list."""
-        # Build a linked list: 
+        # Build a linked list:
         #   0 -> 1 -> 2
         a_graph = DirectedGraph()
         a_graph.connect(0, 1)
@@ -126,7 +126,7 @@ class TestReachability(unittest.TestCase):
 
     def test_binary_tree(self):
         """Test public methods on a binary tree."""
-        # Build a binary tree: 
+        # Build a binary tree:
         #     0
         #    / \
         #   1   2
