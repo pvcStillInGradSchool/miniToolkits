@@ -97,9 +97,34 @@ class TopologicalSort:
 
     def __init__(self, a_graph):
         self._graph = a_graph
+        self._touched = array('b')
+        self._finished = array('b')
+        i = 0
+        while i < a_graph.n_vertices():
+            self._touched.append(False)
+            self._finished.append(False)
+            i += 1
+        self._sorted = list()
+        self._done = False
 
     def sort(self):
         """Return an array of vertices sorted in topological order."""
+        if not self._done:
+            for i in range(self._graph.n_vertices()):
+                if not self._touched[i]:
+                    self._depth_first_touch(i)
+            self._done = True
+        assert len(self._sorted) == self._graph.n_vertices()
+        return tuple(self._sorted)
+
+    def _depth_first_touch(self, i):
+        self._touched[i] = True
+        for k in self._graph.neighbors(i):
+            if not self._finished[k]:
+                assert not self._touched[k], 'Cycle detected!'
+                self._depth_first_touch(k)
+        self._finished[i] = True
+        self._sorted.append(i)
 
 
 class UnionFind(AbstractGraph):
