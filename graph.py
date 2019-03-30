@@ -65,31 +65,33 @@ class Reachability:
     def __init__(self, a_graph):
         self._graph = a_graph
         self._touched = array('b')
-        for i in range(a_graph.n_vertices()):
+        i = 0
+        while i < a_graph.n_vertices():
             self._touched.append(False)
+            i += 1
 
-    def has_path(self, p, q):
-        """Is there a directed path from p to q."""
-        if not self._graph.has_vertex(p):
+    def has_path(self, j, k):
+        """Is there a directed path from j to k."""
+        if not self._graph.has_vertex(j):
             return False
-        if not self._graph.has_vertex(q):
+        if not self._graph.has_vertex(k):
             return False
-        if p == q:
+        if j == k:
             return True
         self._reset()
-        self._depth_first_touch(p)
-        return bool(self._touched[q])
+        self._depth_first_touch(j)
+        return bool(self._touched[k])
 
     def _reset(self):
         assert len(self._touched) == self._graph.n_vertices()
         for i in range(self._graph.n_vertices()):
             self._touched[i] = False
 
-    def _depth_first_touch(self, p):
-        self._touched[p] = True
-        for q in self._graph.neighbors(p):
-            if not self._touched[q]:
-                self._depth_first_touch(q)
+    def _depth_first_touch(self, i):
+        self._touched[i] = True
+        for k in self._graph.neighbors(i):
+            if not self._touched[k]:
+                self._depth_first_touch(k)
 
 
 class TopologicalSort:
