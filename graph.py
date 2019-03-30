@@ -1,7 +1,21 @@
 """Define classes for building and processing graphs."""
 
+import abc
 
-class DirectedGraph:
+
+class AbstractGraph(abc.ABC):
+
+    @abc.abstractmethod
+    def n_vertices(self):
+        """Return the number of vertices in this graph."""
+
+    def has_vertex(self, i):
+        """Is vertex[i] in this graph."""
+        assert isinstance(i, int) and i >= 0
+        return i < self.n_vertices()
+
+
+class DirectedGraph(AbstractGraph):
     """An index-based directed graph data structure."""
 
     def __init__(self):
@@ -16,7 +30,7 @@ class DirectedGraph:
     def add(self, i):
         """Add a vertex labeled by an int to this container."""
         assert isinstance(i, int) and i >= 0
-        while not self._has(i):
+        while not self.has_vertex(i):
             self._neighbor.append(set())
 
     def connect(self, j, k):
@@ -30,7 +44,7 @@ class DirectedGraph:
 
         Return False, if either of them has not been added.
         """
-        if (not self._has(j)) or (not self._has(k)):
+        if (not self.has_vertex(j)) or (not self.has_vertex(k)):
             return False
         if j == k:
             return True
@@ -38,15 +52,12 @@ class DirectedGraph:
 
     def neighbors(self, i):
         """Return a set containing vertex[i]'s neighbors."""
-        if self._has(i):
+        if self.has_vertex(i):
             return frozenset(self._neighbor[i])
         return frozenset()
 
-    def _has(self, i):
-        return i < self.n_vertices()
 
-
-class UnionFind:
+class UnionFind(AbstractGraph):
     """A container supporting quick union/find operations."""
 
     def __init__(self):
@@ -59,7 +70,7 @@ class UnionFind:
     def add(self, i):
         """Add a vertex labeled by an int to this container."""
         assert isinstance(i, int) and i >= 0
-        while not self._has(i):
+        while not self.has_vertex(i):
             self._parent.append(self.n_vertices())
             self._size.append(1)
 
@@ -76,7 +87,7 @@ class UnionFind:
 
         Return False, if either of them has not been added.
         """
-        if (not self._has(j)) or (not self._has(k)):
+        if (not self.has_vertex(j)) or (not self.has_vertex(k)):
             return False
         return self.root(j) == self.root(k)
 
@@ -84,12 +95,9 @@ class UnionFind:
         """Return the total number of vertices in this container."""
         return len(self._size)
 
-    def _has(self, i):
-        return i < self.n_vertices()
-
     def root(self, i):
         """Return the root of the tree containing i."""
-        assert self._has(i), "{0} is not in this container.".format(i)
+        assert self.has_vertex(i), "{0} is not in this container.".format(i)
         while i != self._parent[i]:
             # Compress the path to make the tree flatter.
             grand_parent = self._parent[self._parent[i]]
