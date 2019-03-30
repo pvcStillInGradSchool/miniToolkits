@@ -44,6 +44,7 @@ class Union:
         return i < self.n_elements()
 
     def root(self, i):
+        """Return the root of the tree containing i."""
         assert self._has(i), "{0} is not in this container.".format(i)
         while i != self._parent[i]:
             # Compress the path to make the tree flatter.

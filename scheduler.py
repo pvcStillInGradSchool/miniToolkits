@@ -4,7 +4,7 @@ import graph
 
 
 class Scheduler:
-    """Schedule a set of tasks."""
+    """A scheduler supporting O(1) adding and O(N) scheduling."""
 
     def __init__(self):
         self._task_to_prerequisites = dict()
