@@ -5,6 +5,7 @@ from array import array
 
 
 class AbstractGraph(abc.ABC):
+    """Base of graph-like classes."""
 
     @abc.abstractmethod
     def n_vertices(self):
