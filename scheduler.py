@@ -26,7 +26,7 @@ class Scheduler:
         for task in tasks:
             self.add_a_task(task)
 
-    def count_tasks(self):
+    def n_tasks(self):
         """Return the number of tasks being added."""
         return len(self._task_to_prerequisites)
 
