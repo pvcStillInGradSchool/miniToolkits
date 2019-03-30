@@ -1,6 +1,29 @@
 """Define classes for building and processing graphs."""
 
 
+class DirectedGraph:
+    
+    def __init__(self):
+        # Suppose vertex[i] is the i-th vertex, then
+        # _neighbor[i] is the set of neighbors of vertex[i]
+    
+    def n_elements(self):
+        """Return the total number of elements in this graph."""
+
+    def add(self, i):
+        """Add an element labeled by an int to this container."""
+
+    def connect(self, j, k):
+        """Connect element[j] to element[k]."""
+
+    def connected(self, j, k):
+        """Return True if element[k] is a neighbor of element[j].
+
+        Return False, if either of them has not been added.
+        """
+
+    def neighbors(self, i):
+        """Return a set containing element[i]'s neighbors."""
 class UnionFind:
     """A container supporting quick union/find operations."""
 
