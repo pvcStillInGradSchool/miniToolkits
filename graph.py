@@ -92,6 +92,16 @@ class Reachability:
                 self._depth_first_touch(q)
 
 
+class TopologicalSort:
+    """Topologically sort vertices in a directed graph."""
+
+    def __init__(self, a_graph):
+        self._graph = a_graph
+
+    def sort(self):
+        """Return an array of vertices sorted in topological order."""
+
+
 class UnionFind(AbstractGraph):
     """A container supporting quick union/find operations."""
 

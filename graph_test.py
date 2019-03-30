@@ -4,6 +4,7 @@ import unittest
 
 from graph import DirectedGraph
 from graph import Reachability
+from graph import TopologicalSort
 from graph import UnionFind
 
 
@@ -143,6 +144,55 @@ class TestReachability(unittest.TestCase):
         # Parent is NOT reachable.
         self.assertFalse(checker.has_path(1, 0))
         self.assertFalse(checker.has_path(2, 0))
+
+
+class TestTopologicalSort(unittest.TestCase):
+    """Test the correctness of graph.TopologicalSort."""
+
+    @staticmethod
+    def _sorted(sorted_vertices, a_checker):
+        i = 0
+        while i != len(sorted_vertices):
+            for j in range(i+1, len(sorted_vertices)):
+                if a_checker.has_path(sorted_vertices[i], sorted_vertices[j]):
+                    return False
+            i += 1
+        return True
+
+    def test_linked_list(self):
+        """Test public methods on a linked list."""
+        # Build a linked list:
+        #   0 -> 1 -> 2
+        a_graph = DirectedGraph()
+        a_graph.connect(0, 1)
+        a_graph.connect(1, 2)
+        # Sort.
+        a_sorter = TopologicalSort(a_graph)
+        sorted_vertices = a_sorter.sort()
+        # Only one correct sequence.
+        self.assertEqual(sorted_vertices, (2, 1, 0))
+        # Check the result using a graph.Reachability object.
+        a_checker = Reachability(a_graph)
+        self.assertTrue(self._sorted(sorted_vertices, a_checker))
+
+    def test_binary_tree(self):
+        """Test public methods on a binary tree."""
+        # Build a binary tree:
+        #     0
+        #    / \
+        #   1   2
+        a_graph = DirectedGraph()
+        a_graph.connect(0, 1)
+        a_graph.connect(0, 2)
+        # Sort.
+        a_sorter = TopologicalSort(a_graph)
+        sorted_vertices = a_sorter.sort()
+        # Either of the two sequences is correct.
+        self.assertTrue(sorted_vertices in {(2, 1, 0), (1, 2, 0)})
+        # Check the result using a graph.Reachability object.
+        a_checker = Reachability(a_graph)
+        self.assertTrue(self._sorted(sorted_vertices, a_checker))
+
 
 class TestUnionFind(unittest.TestCase):
     """Test the correctness of graph.UnionFind."""
