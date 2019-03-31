@@ -1,31 +1,30 @@
 """Define Scheduler."""
 
-import graph
+from graph import DirectedGraph
+from graph import TopologicalSort
+from graph import UnionFind
 
 
 class Scheduler:
     """A scheduler supporting O(1) adding and O(N) scheduling."""
 
     def __init__(self):
-        self._task_to_prerequisites = dict()
         self._task_to_id = dict()
         self._id_to_task = list()
-        self._union = graph.Union()
-        # self._task_to_parent = dict()
-        # self._task_to_size = dict()
-        self._touched_tasks = set()
-        self._finished_tasks = set()
-        self._sorted_tasks = list()
+        self._graph = DirectedGraph()
+        self._union = UnionFind()
 
     def add_a_task(self, task):
         """Add a new task.
 
         Do nothing, if the task has already been added.
         """
-        if self._has_not_added(task):
-            self._task_to_prerequisites[task] = set()
-            self._task_to_id[task] = self.n_tasks()
+        if task not in self._task_to_id:
+            i_task = self.n_tasks()
+            self._task_to_id[task] = i_task
             self._id_to_task.append(task)
+        assert len(self._id_to_task) == len(self._task_to_id)
+        assert task == self._id_to_task[self._task_to_id[task]]
 
     def add_tasks(self, tasks):
         """Add multiple tasks."""
@@ -42,111 +41,50 @@ class Scheduler:
         Automatically add a new task, if any of the two is new.
         Do nothing, if the prerequisite has already been added.
         """
-        if self._has_not_added(task):
-            self.add_a_task(task)
-        if self._has_not_added(prerequisite):
-            self.add_a_task(prerequisite)
-        self._connect_tasks(task, prerequisite)
-
-    def _connect_tasks(self, task_a, task_b):
-        self._task_to_prerequisites[task_a].add(task_b)
-        id_a = self._task_to_id[task_a]
-        id_b = self._task_to_id[task_b]
-        self._union.connect(id_a, id_b)
+        self.add_a_task(task)
+        self.add_a_task(prerequisite)
+        i_task = self._task_to_id[task]
+        i_prerequisite = self._task_to_id[prerequisite]
+        self._graph.connect(i_task, i_prerequisite)
+        self._union.connect(i_task, i_prerequisite)
 
     def add_prerequisites(self, task, prerequisites):
         """Add multiple prerequisites for a task."""
         for prerequisite in prerequisites:
             self.add_a_prerequisite(task, prerequisite)
 
-    def check_dependency(self, task, prerequisite):
-        """Whether task depends on prerequisite?"""
-        if self._has_not_added(task):
-            return False
-        if self._has_not_added(prerequisite):
-            return False
-        self._reset()
-        self._depth_first_touch(task)
-        return self._has_touched(prerequisite)
-
-    def _depth_first_touch(self, task):
-        """Touch-only Depth-First-Search."""
-        self._touched_tasks.add(task)
-        for prerequisite in self._task_to_prerequisites[task]:
-            if self._has_not_touched(prerequisite):
-                self._depth_first_touch(prerequisite)
-
     def schedule(self):
         """Return the tasks in topologically sorted order."""
-        self._reset()
-        for task in self._task_to_prerequisites:
-            if self._has_not_touched(task):
-                self._topo_sort(task)
-        self._assert_equal_length()
-        return self._pack_scheduled_tasks()
-
-    def _pack_scheduled_tasks(self):
-        root_to_component = dict()
-        for task in self._sorted_tasks:
-            root = self._union.root(self._task_to_id[task])
-            if root not in root_to_component:
-                root_to_component[root] = list()
-            root_to_component[root].append(task)
+        sorted_tasks = TopologicalSort(self._graph).sort()
+        # Make immutable copies.
         scheduled_tasks = set()
-        for component in root_to_component.values():
-            scheduled_tasks.add(tuple(component))
+        for a_component in self._to_components(sorted_tasks):
+            scheduled_tasks.add(tuple(a_component))
         return scheduled_tasks
 
-    def _has_no_prerequisite(self, task):
-        prerequisites = self._task_to_prerequisites[task]
-        return len(prerequisites) == 0
-
-    def _get_a_prerequisite(self, task):
-        prerequisites = self._task_to_prerequisites[task]
-        return next(iter(prerequisites))
-
-    def _has_not_added(self, task):
-        return task not in self._task_to_prerequisites
-
-    def _has_touched(self, task):
-        return task in self._touched_tasks
-
-    def _has_not_touched(self, task):
-        return task not in self._touched_tasks
-
-    def _has_not_finished(self, task):
-        return task not in self._finished_tasks
-
-    def _reset(self):
-        self._touched_tasks.clear()
-        self._finished_tasks.clear()
-        self._sorted_tasks.clear()
-
-    def _topo_sort(self, task):
-        """Topologically sort all the downstream tasks reachable from task."""
-        self._touched_tasks.add(task)
-        for prerequisite in self._task_to_prerequisites[task]:
-            if self._has_not_finished(prerequisite):
-                assert self._has_not_touched(prerequisite), 'Cycle detected!'
-                self._topo_sort(prerequisite)
-        self._finished_tasks.add(task)
-        self._sorted_tasks.append(task)
-
-    def _assert_equal_length(self):
-        assert (len(self._touched_tasks) == len(self._finished_tasks) ==
-                len(self._sorted_tasks) == len(self._task_to_prerequisites))
-
+    def _to_components(self, sorted_tasks):
+        root_to_component = dict()
+        for i_task in sorted_tasks:
+            i_root = self._union.root(i_task)
+            if i_root not in root_to_component:
+                root_to_component[i_root] = list()
+            task = self._id_to_task[i_task]
+            root_to_component[i_root].append(task)
+        return root_to_component.values()
 
 if __name__ == "__main__":
     import sys
-    a_scheduler = Scheduler()
+    A_SCHEDULER = Scheduler()
     for line in sys.stdin:
         if line[0] != '#':
-            tasks = line.split()
-            a_scheduler.add_prerequisites(tasks[0], tasks[1:])
+            task_and_prerequisites = line.split()
+            A_SCHEDULER.add_prerequisites(
+                task_and_prerequisites[0],
+                task_and_prerequisites[1:]
+            )
     i = 0
-    for component in a_scheduler.schedule():
+    for one_component_of_scheduled_tasks in A_SCHEDULER.schedule():
         i += 1
         print('Independent Task Group {0}:'.format(i))
-        for task in component:
-            print('  ' + task)
+        for a_task in one_component_of_scheduled_tasks:
+            print('  ' + a_task)
