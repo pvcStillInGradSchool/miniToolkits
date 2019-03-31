@@ -1,7 +1,8 @@
 # miniScheduler
 
 ## Demo
-To schedule the tasks in [`todo_list.txt`](./todo_list.txt), run the following command:
+First, prepare a text file, e.g. [`todo_list.txt`](./todo_list.txt), which contains your tasks and their prerequisites.
+To schedule the tasks listed in [`todo_list.txt`](./todo_list.txt), run the following command:
 ```shell
 python3 scheduler.py < todo_list.txt
 ```
