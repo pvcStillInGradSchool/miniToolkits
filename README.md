@@ -1,5 +1,9 @@
 # miniScheduler
 
+## Requirement
+Language and library facilities used in this repository are intentionally restricted within [The Python Language](https://docs.python.org/3/reference/index.html) and [The Python Standard Library](https://docs.python.org/3/library/index.html).
+So, the only requirement for running and using this repository is a standard [Python 3.4+](https://www.python.org/downloads/) environment.
+
 ## Demo
 First, prepare a text file, e.g. [`todo_list.txt`](./todo_list.txt), which contains your tasks and their prerequisites.
 To schedule the tasks listed in [`todo_list.txt`](./todo_list.txt), run the following command:
