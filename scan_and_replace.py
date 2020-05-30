@@ -24,16 +24,16 @@ def scan_and_print(sys_argv):
   total_count = 0
   for path in paths:
     old_name = get_absolute_path(path)
-    new_name = old_name + '.temp'
     count = 0
     with path.open() as old_file:
-      with open(new_name, 'w') as new_file:
-        for line in old_file:
-          if old_str in line:
-            print(line, end='')
-            count += 1
-    print(str(count) + ' line(s) found in ' + old_name)
-    total_count += count
+      for line in old_file:
+        if old_str in line:
+          print(line, end='')
+          count += 1
+    if count > 0:
+      print(str(count) + ' line(s) found in ' + old_name)
+      total_count += count
+  print(str(total_count) + ' line(s) found in all ' + suffix + ' file(s).')
   return total_count
 
 
