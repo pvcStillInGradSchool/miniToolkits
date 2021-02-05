@@ -12,22 +12,24 @@ def scan_and_print(sys_argv):
   root = pathlib.Path(sys_argv[1])
   suffix = sys_argv[2]
   old_str = sys_argv[3]
-  new_str = sys_argv[4]
   paths = list(root.glob('**/*.' + suffix))
-  total_count = 0
+  word_count = 0
+  file_count = 0
   for path in paths:
     old_name = str(path)
-    count = 0
+    word_count_in_file = 0
     with path.open() as old_file:
       for line in old_file:
-        if old_str in line:
-          print(line, end='')
-          count += 1
-    if count > 0:
-      print(str(count) + ' line(s) found in ' + old_name)
-      total_count += count
-  print(str(total_count) + ' line(s) found in all ' + suffix + ' file(s).')
-  return total_count
+        word_count_in_line = line.count(old_str)
+        if word_count_in_line > 0:
+          word_count_in_file += word_count_in_line
+          # print(line, end='')
+    if word_count_in_file > 0:
+      print('{0} "{1}"(s) found in {2}'.format(word_count_in_file, old_str, old_name))
+      word_count += word_count_in_file
+      file_count += 1
+  print('{0} "{1}"(s) found in {2} {3} file(s)'.format(word_count, old_str, file_count, suffix))
+  return word_count
 
 
 def scan_and_replace(sys_argv):
