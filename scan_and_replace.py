@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 '''Scan and Replace.
 
 Scan all files with a given `suffix` in a given `path` recursively, then
