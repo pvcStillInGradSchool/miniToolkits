@@ -18,4 +18,4 @@ if __name__ == "__main__":
     visit(root, 0)
   else:
     print('Usage:')
-    print('  $ python3 printPdfOutline.py <FILE.pdf> [> toc.txt]')
+    print('  $ python3 get_pdf_outline.py <FILE.pdf> [> outline.txt]')
