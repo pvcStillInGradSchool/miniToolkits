@@ -49,13 +49,35 @@ def scan_and_replace(sys_argv):
     pathlib.Path(new_name).replace(old_name)
 
 
+def scan_and_delete(sys_argv):
+  root = pathlib.Path(sys_argv[1])
+  suffix = sys_argv[2]
+  old_str = sys_argv[3]
+  paths = list(root.glob('**/*.' + suffix))
+  for path in paths:
+    old_name = str(path)
+    new_name = old_name + '.temp'
+    with path.open() as old_file:
+      with open(new_name, 'w') as new_file:
+        for line in old_file:
+          if old_str not in line:
+            new_file.write(line)
+    pathlib.Path(new_name).replace(old_name)
+
+
 if __name__ == '__main__':
   if (len(sys.argv) != 5):
     print('Usage:')
     print('  python3 scan_and_replace.py [root] [suffix] [old] [new]')
   else:
     if scan_and_print(sys.argv) > 0:
-      print('Are you sure to replace these "{0}"s to "{1}"s? [y/n]'.format(
-          sys.argv[3], sys.argv[4]), end='', flush=True)
-      if (sys.stdin.read(1) == 'y'):
-        scan_and_replace(sys.argv)
+      if sys.argv[4] == '-d':
+        print('Are you sure to delete these lines? [y/n]'.format(
+          end='', flush=True))
+        if (sys.stdin.read(1) == 'y'):
+          scan_and_delete(sys.argv)
+      else:
+        print('Are you sure to replace these "{0}"s to "{1}"s? [y/n]'.format(
+            sys.argv[3], sys.argv[4]), end='', flush=True)
+        if (sys.stdin.read(1) == 'y'):
+          scan_and_replace(sys.argv)
