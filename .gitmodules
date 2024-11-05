@@ -1,3 +1,3 @@
 [submodule "pdfbookmarker"]
 	path = pdfbookmarker
-	url = https://github.com/pvcStillInGradSchool/pdfbookmarker
+	url = git@github.com:pvc1989/pdfbookmarker.git
